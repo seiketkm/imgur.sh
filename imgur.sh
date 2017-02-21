@@ -89,29 +89,13 @@ while [ $# -gt 0 ]; do
 	delete_hash="${response##*<deletehash>}"
 	delete_hash="${delete_hash%%</deletehash>*}"
 	echo $url | sed 's/^http:/https:/'
-	echo "Delete page: https://imgur.com/delete/$delete_hash" >&2
-
+	
 	# Append the URL to a string so we can put them all on the clipboard later
 	clip+="$url"
 	if [ $# -gt 0 ]; then
 		clip+=$'\n'
 	fi
 done
-
-# Put the URLs on the clipboard if we can
-if type pbcopy &>/dev/null; then
-	echo -n "$clip" | pbcopy
-elif [ $DISPLAY ]; then
-	if type xsel &>/dev/null; then
-		echo -n "$clip" | xsel
-	elif type xclip &>/dev/null; then
-		echo -n "$clip" | xclip
-	else
-		echo "Haven't copied to the clipboard: no xsel or xclip" >&2
-	fi
-else
-	echo "Haven't copied to the clipboard: no \$DISPLAY or pbcopy" >&2
-fi
 
 if $errors; then
 	exit 1
